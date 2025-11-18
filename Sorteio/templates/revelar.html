@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Seu Amigo Secreto | Natal 2025 Tia Rose</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #b3b6ea, #f7cac9);
+            min-height: 100vh; margin: 0; padding: 0;}
+        .painel { max-width: 430px; margin: 60px auto; background: #fff; border-radius: 18px; box-shadow: 0 6px 24px #d8336780;
+            padding: 34px 32px 32px 32px; text-align: center;}
+        .amigo { font-size: 2.5em; color: #d83367; padding: 20px 0; font-weight: 600; letter-spacing: 1px; animation: revealFade 2s;}
+        @keyframes revealFade { 0% {opacity: 0; transform: scale(0.3);} 100% {opacity: 1; transform: scale(1);} }
+        .emoji { font-size: 54px;}
+        h2 { color: #1b9aaa; font-size: 1.6em;}
+        .footer { color: #777; margin-top: 20px; font-size: 1.1em;}
+        .dev {color:#333; font-size:1em; margin-top: 10px; font-weight: bold;}
+    </style>
+</head>
+<body>
+    <div class="painel">
+        <span class="emoji">🎅🎁</span>
+        <h2>Seu amigo secreto é:</h2>
+        <div class="amigo" id="nomeReveal">{{ amigo }}</div>
+        <div class="footer">
+            Guarde este nome para não revelar antes da data <span style="font-size:1.3em;">🎄</span>
+            <br><br>
+            <span class="dev">Desenvolvido por Fabricio Castanheiro</span>
+        </div>
+    </div>
+    <audio id="confettiSound" src="https://cdn.pixabay.com/audio/2022/08/20/audio_1237557b46.mp3" preload="auto"></audio>
+    <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124b1a5d6a.mp3" autoplay loop></audio>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          var audio = document.getElementById("confettiSound");
+          audio.play();
+          confetti({
+            particleCount: 180,
+            spread: 100,
+            origin: { y: 0.62 }
+          });
+      });
+    </script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🎁 Amigo Secreto Natal 2025 Tia Rose 🎁</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: linear-gradient(135deg, #f7cac9, #b3b6ea); margin: 0; padding: 0; min-height: 100vh;}
+        .container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px #92a8d166; padding: 32px 36px 38px 36px;}
+        h2 { color: #d83367; text-align: center; font-size: 2.2em; margin-bottom: 10px;}
+        ul { list-style: none; padding: 0; margin-top: 32px;}
+        li { margin: 14px 0; font-size: 1.16em; background: #f7cac944; border-radius: 10px; padding: 12px; box-shadow: 0 2px 8px #92a8d149; display: flex; flex-direction:column;}
+        a { color: #d83367; font-weight: bold; text-decoration: none; word-break: break-all; margin-bottom: 8px;}
+        a:hover { text-decoration: underline; color: #1b9aaa; }
+        .btn-whats {background: #25d366 !important; color: #fff !important; border:none; border-radius: 6px; padding: 7px 16px; cursor:pointer; margin-top: 3px; width: fit-content; font-size:1em; font-weight:bold; display:inline-block; text-decoration:none;}
+        .btn-whats:hover {background: #1b9aaa !important;}
+        button.copiar {background: #d83367; color: #fff; border:none; border-radius:6px; font-weight:bold; padding:7px 16px; cursor:pointer; margin-top: 5px;}
+        button.copiar:hover {background: #25d366;}
+        button.refazer {background: #d83367; margin-bottom: 24px; padding: 10px 26px; font-size:1.1em; color: #fff; font-weight:bold; border:none; border-radius:6px; cursor:pointer;}
+        button.refazer:hover {background: #1b9aaa;}
+        .footer {text-align: center; margin-top: 24px; color: #555; font-size: 0.98em;}
+        .dev { color:#333; font-size:1em; margin-top: 10px; font-weight: bold;}
+        .logo {text-align: center; margin-top: 15px;}
+        .logo img { width: 80px; border-radius: 40px; border:3px solid #d83367; margin-bottom: 6px;}
+        .event { color:#1b9aaa; font-weight: bold; font-size: 1.13em; margin-bottom: 7px; text-align:center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="POST" style="text-align:right;">
+            <button class="refazer" type="submit">🔁 Refazer Sorteio</button>
+        </form>
+        <div class="logo">
+            <img src="https://cdn.pixabay.com/photo/2016/11/18/17/20/christmas-1835437_1280.png" alt="Logo Amigo Secreto">
+        </div>
+        <h2>🎁 Amigo Secreto Natal 2025 Tia Rose 🎁</h2>
+        <div class="event">Data: 22/12/2025 • Família Tia Rose</div>
+        <ul>
+            {% for nome in participantes %}
+            <li>
+                <span>👤 <b>{{ nome }}</b>:</span>
+                <a href="{{ request.url_root }}{{ codigos[nome] }}" target="_blank">
+                    {{ request.url_root }}{{ codigos[nome] }}
+                </a>
+                <button class="copiar" onclick="copyToClipboard('{{ request.url_root }}{{ codigos[nome] }}', this); return false;">📥 Copiar</button>
+                <a href="https://wa.me/?text=Olá!%20Seu%20link%20do%20Amigo%20Secreto%20é:%20{{ request.url_root }}{{ codigos[nome] }}" class="btn-whats" target="_blank">Enviar no WhatsApp</a>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="footer">
+            <hr>
+            <small>Copie e envie o link ou clique WhatsApp para compartilhar.<br>Cada participante só vê seu sorteado!</small>
+            <br>
+            <span class="dev">Desenvolvido por Fabricio Castanheiro</span>
+        </div>
+    </div>
+    <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124b1a5d6a.mp3" autoplay loop></audio>
+    <script>
+    function copyToClipboard(text, btn) {
+      navigator.clipboard.writeText(text);
+      btn.innerText = '✅ Copiado!';
+      setTimeout(() => btn.innerText = '📥 Copiar', 1300);
+    }
+    </script>
+</body>
+</html>
