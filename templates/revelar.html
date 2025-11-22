@@ -21,6 +21,7 @@
         <span class="emoji">🎅🎁</span>
         <h2>Olá <span style="color:#1b9aaa">{{ nome }}</span>!<br>Seu amigo secreto é:</h2>
         <div class="amigo" id="nomeReveal">{{ amigo }}</div>
+        <button onclick="falarNome()" style="margin-top:18px; background:#1b9aaa; color:#fff; border:none; border-radius:8px; padding:10px 22px; font-size:1.1em; font-weight:bold; cursor:pointer;">🔊 Ouvir o nome</button>
         <div class="footer">
             Guarde este nome para não revelar antes da data <span style="font-size:1.3em;">🎄</span>
             <br><br>
@@ -29,17 +30,30 @@
     </div>
     <audio id="confettiSound" src="https://cdn.pixabay.com/audio/2022/08/20/audio_1237557b46.mp3" preload="auto"></audio>
     <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124b1a5d6a.mp3" autoplay loop></audio>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-          var audio = document.getElementById("confettiSound");
-          audio.play();
-          confetti({
-            particleCount: 180,
-            spread: 100,
-            origin: { y: 0.62 }
-          });
-      });
-    </script>
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                    var audio = document.getElementById("confettiSound");
+                    audio.play();
+                    confetti({
+                        particleCount: 180,
+                        spread: 100,
+                        origin: { y: 0.62 }
+                    });
+            });
+
+            function falarNome() {
+                var nome = document.getElementById('nomeReveal').innerText;
+                var msg = new SpeechSynthesisUtterance(nome);
+                msg.lang = 'pt-BR';
+                // Seleciona voz pt-BR se disponível
+                var voices = window.speechSynthesis.getVoices();
+                var vozBR = voices.find(v => v.lang === 'pt-BR' || v.lang === 'pt_BR');
+                if (vozBR) {
+                    msg.voice = vozBR;
+                }
+                window.speechSynthesis.speak(msg);
+            }
+        </script>
 </body>
 </html>
