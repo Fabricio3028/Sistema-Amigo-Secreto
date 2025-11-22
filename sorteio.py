@@ -7,13 +7,42 @@ import json
 app = Flask(__name__)
 
 participantes = [
-    "Fabrício Castanheiro", "daiane meyer castanheiro", "Valdeci deucher", "Gabriela Ribeiro", "Marcelo Onorio",
-    "Helena Ribeiro", "Isaac Castanheiro", "Rosenilda Ribeiro", "Fabiano de mattos", "Gabriel de mattos",
-    "Ivonete Ribeiro da cunha", "Luciana", "Vanderlei (delei)", "Micael", "Vanessa",
-    "Eva", "Jucelino", "daiane castanheiro", "Lucas de Oliveira", "Eloah Castanheiro",
-    "Miguel", "Taca", "Yuri", "Fabíola", "cauana da Silva",
-    "Lucas schutz", "Eloá schutz", "Marzinho (tuntuna)", "Sandra Mara", "Namir",
-    "Duduca"
+    "Fabrício Castanheiro",
+    "Daiane Meyer Castanheiro",
+    "Valdeci deucher",
+    "Gabriela Ribeiro",
+    "Marcelo Onorio",
+    "Helena Ribeiro",
+    "Isaac Castanheiro",
+    "Rosenilda Ribeiro",
+    "Fabiano de mattos",
+    "Gabriel de mattos",
+    "Ivonete Ribeiro da cunha",
+    "Luciana",
+    "Vanderlei (delei)",
+    "Micael",
+    "Vanessa",
+    "Eva",
+    "Jucelino",
+    "daiane castanheiro",
+    "Lucas de Oliveira",
+    "Eloah Castanheiro",
+    "Miguel",
+    "Taca",
+    "Yuri",
+    "Fabíola",
+    "cauana da Silva",
+    "Lucas schutz",
+    "Eloá schutz",
+    "Marzinho (tuntuna)",
+    "Sandra Mara",
+    "Namir",
+    "Duduca",
+    "Patricia",
+    "Jaumir",
+    "Iasmim",
+    "Adão (Tio Dão)",
+    "Salete (Tia Salete)"
 ]
 
 def sortear(participantes):
@@ -65,17 +94,32 @@ def lista_links():
         resultado = sortear(participantes)
         codigos = gerar_codigos(participantes)
         salvar_sorteio(resultado, codigos)
+    # Monta links com nome no final
+    links = {}
+    for nome in participantes:
+        if nome.strip():
+            nome_url = nome.replace(' ', '-').replace('(', '').replace(')', '').replace('ç', 'c').replace('ã', 'a').replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('â', 'a').replace('ê', 'e').replace('ô', 'o').replace('õ', 'o').replace('ü', 'u').replace('í', 'i').replace('ú', 'u').replace('É', 'E').replace('Á', 'A').replace('Ó', 'O').replace('Í', 'I').replace('Ú', 'U').replace('Ç', 'C').replace('Ã', 'A').replace('Õ', 'O').replace('Ê', 'E').replace('Ô', 'O').replace('Â', 'A').replace('Ü', 'U')
+            links[nome] = f"{codigos[nome]}-{nome_url}"
+        else:
+            links[nome] = ""
     return render_template('lista.html',
                            participantes=participantes,
                            codigos=codigos,
+                           links=links,
                            request=request)
 
-@app.route('/<codigo>')
-def revelar(codigo):
+@app.route('/<codigo_nome>')
+def revelar(codigo_nome):
     resultado, codigos = carregar_sorteio()
-    links = {codigos[nome]: resultado[nome] for nome in participantes} if resultado and codigos else {}
-    if codigo in links:
-        return render_template('revelar.html', amigo=links[codigo])
+    # Monta dicionário de links válidos: {"codigo-nome-url": (nome, sorteado)}
+    links = {}
+    for nome in participantes:
+        if nome.strip():
+            nome_url = nome.replace(' ', '-').replace('(', '').replace(')', '').replace('ç', 'c').replace('ã', 'a').replace('á', 'a').replace('é', 'e').replace('í', 'i').replace('ó', 'o').replace('ú', 'u').replace('â', 'a').replace('ê', 'e').replace('ô', 'o').replace('õ', 'o').replace('ü', 'u').replace('í', 'i').replace('ú', 'u').replace('É', 'E').replace('Á', 'A').replace('Ó', 'O').replace('Í', 'I').replace('Ú', 'U').replace('Ç', 'C').replace('Ã', 'A').replace('Õ', 'O').replace('Ê', 'E').replace('Ô', 'O').replace('Â', 'A').replace('Ü', 'U')
+            links[f"{codigos[nome]}-{nome_url}"] = (nome, resultado[nome])
+    if codigo_nome in links:
+        nome, amigo = links[codigo_nome]
+        return render_template('revelar.html', amigo=amigo, nome=nome)
     else:
         return "Link inválido! Peça o link correto ao organizador."
 

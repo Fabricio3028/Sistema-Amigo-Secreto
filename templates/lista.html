@@ -29,20 +29,22 @@
         <form method="POST" style="text-align:right;">
             <button class="refazer" type="submit">🔁 Refazer Sorteio</button>
         </form>
-        <div class="logo">
-            <img src="https://cdn.pixabay.com/photo/2016/11/18/17/20/christmas-1835437_1280.png" alt="Logo Amigo Secreto">
-        </div>
+
         <h2>🎁 Amigo Secreto Natal 2025 Tia Rose 🎁</h2>
-        <div class="event">Data: 22/12/2025 • Família Tia Rose</div>
+        <div class="event">Data: 24/12/2025 • Família Tia Rose</div>
         <ul>
             {% for nome in participantes %}
             <li>
                 <span>👤 <b>{{ nome }}</b>:</span>
-                <a href="{{ request.url_root }}{{ codigos[nome] }}" target="_blank">
-                    {{ request.url_root }}{{ codigos[nome] }}
+                {% if links[nome] %}
+                <a href="{{ request.url_root }}{{ links[nome] }}" target="_blank">
+                    {{ request.url_root }}{{ links[nome] }}
                 </a>
-                <button class="copiar" onclick="copyToClipboard('{{ request.url_root }}{{ codigos[nome] }}', this); return false;">📥 Copiar</button>
-                <a href="https://wa.me/?text=Olá!%20Seu%20link%20do%20Amigo%20Secreto%20é:%20{{ request.url_root }}{{ codigos[nome] }}" class="btn-whats" target="_blank">Enviar no WhatsApp</a>
+                <button class="copiar" onclick="copyToClipboard('{{ request.url_root }}{{ links[nome] }}', this); return false;">📥 Copiar</button>
+                <a href="https://wa.me/?text=Olá!%20Seu%20link%20do%20Amigo%20Secreto%20é:%20{{ request.url_root }}{{ links[nome] }}" class="btn-whats" target="_blank">Enviar no WhatsApp</a>
+                {% else %}
+                <span style="color:#aaa;">(vaga disponível)</span>
+                {% endif %}
             </li>
             {% endfor %}
         </ul>
@@ -54,12 +56,35 @@
         </div>
     </div>
     <audio id="bgMusic" src="https://cdn.pixabay.com/audio/2022/07/26/audio_124b1a5d6a.mp3" autoplay loop></audio>
-    <script>
-    function copyToClipboard(text, btn) {
-      navigator.clipboard.writeText(text);
-      btn.innerText = '✅ Copiado!';
-      setTimeout(() => btn.innerText = '📥 Copiar', 1300);
-    }
-    </script>
+        <script>
+        function copyToClipboard(text, btn) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(function() {
+                    btn.innerText = '✅ Copiado!';
+                    setTimeout(() => btn.innerText = '📥 Copiar', 1300);
+                }, function() {
+                    fallbackCopy(text, btn);
+                });
+            } else {
+                fallbackCopy(text, btn);
+            }
+        }
+
+        function fallbackCopy(text, btn) {
+            var tempInput = document.createElement('input');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            tempInput.setSelectionRange(0, 99999); // Para mobile
+            try {
+                document.execCommand('copy');
+                btn.innerText = '✅ Copiado!';
+            } catch (err) {
+                btn.innerText = '❌ Erro ao copiar';
+            }
+            setTimeout(() => btn.innerText = '📥 Copiar', 1300);
+            document.body.removeChild(tempInput);
+        }
+        </script>
 </body>
 </html>
