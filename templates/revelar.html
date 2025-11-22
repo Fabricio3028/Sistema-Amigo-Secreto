@@ -43,8 +43,10 @@
             });
 
             function falarNome() {
-                var nome = document.getElementById('nomeReveal').innerText;
-                var msg = new SpeechSynthesisUtterance(nome);
+                var nome = document.querySelector('h2 span').innerText;
+                var amigo = document.getElementById('nomeReveal').innerText;
+                var texto = `Olá ${nome}! Seu amigo secreto é ${amigo}`;
+                var msg = new SpeechSynthesisUtterance(texto);
                 msg.lang = 'pt-BR';
                 // Seleciona voz pt-BR se disponível
                 var voices = window.speechSynthesis.getVoices();
