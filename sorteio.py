@@ -1,11 +1,20 @@
-# Dicionário de restrições: quem não pode tirar quem
-restricoes = {
-    # Exemplo:
-    "Fabrício Castanheiro": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
-    "Daiane Meyer Castanheiro": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
-    "Patricia": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
-    "Iasmim": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
-}
+
+# Carrega restrições do arquivo
+
+import json
+def carregar_restricoes():
+    if os.path.exists("restricoes.json"):
+        with open("restricoes.json", "r", encoding="utf-8") as f:
+            return json.load(f).get("restricoes", {})
+    return {}
+
+# Salva restrições no arquivo
+import os
+def salvar_restricoes(restricoes):
+    with open("restricoes.json", "w", encoding="utf-8") as f:
+        json.dump({"restricoes": restricoes}, f, ensure_ascii=False, indent=2)
+
+restricoes = carregar_restricoes()
 from flask import Flask, render_template, request, redirect, url_for
 import random
 import string
@@ -59,6 +68,8 @@ participantes = [
 ]
 
 def sortear(participantes):
+    global restricoes
+    restricoes = carregar_restricoes()
     sorteio = participantes.copy()
     tentativas = 0
     while True:
@@ -77,6 +88,22 @@ def sortear(participantes):
         if tentativas > 10000:
             raise Exception("Não foi possível sortear respeitando todas as restrições. Reveja as regras!")
     return dict(zip(participantes, sorteio))
+
+# Painel de restrições
+@app.route('/restricoes', methods=['GET', 'POST'])
+def painel_restricoes():
+    global restricoes, participantes
+    carregar_participantes()
+    restricoes = carregar_restricoes()
+    msg = None
+    if request.method == 'POST':
+        nome = request.form.get('nome')
+        restritos = request.form.getlist('restritos')
+        restricoes[nome] = restritos
+        salvar_restricoes(restricoes)
+        msg = f'Restrições de {nome} atualizadas!'
+    restricoes = carregar_restricoes()
+    return render_template('restricoes.html', participantes=participantes, restricoes=restricoes, msg=msg)
 
 def gerar_codigos(nomes):
     codigos = {}

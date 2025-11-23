@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restrições de Sorteio</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f7cac9; margin: 0; padding: 0; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; border-radius: 18px; box-shadow: 0 4px 20px #92a8d166; padding: 32px 36px 38px 36px; }
+        h2 { color: #d83367; text-align: center; font-size: 2em; margin-bottom: 18px; }
+        form { margin-bottom: 24px; }
+        select, button { font-size: 1.1em; padding: 7px 12px; border-radius: 6px; border: 1px solid #ccc; }
+        select[multiple] { min-height: 90px; }
+        .msg { color: #1b9aaa; text-align: center; font-weight: bold; margin-bottom: 18px; }
+        .footer {text-align: center; margin-top: 24px; color: #555; font-size: 0.98em;}
+        .dev { color:#333; font-size:1em; margin-top: 10px; font-weight: bold;}
+        .painel {margin-bottom: 30px;}
+        .voltar {background: #d83367; color: #fff; border:none; border-radius:6px; padding:7px 16px; font-weight:bold; cursor:pointer; margin-bottom: 18px;}
+        .voltar:hover {background: #1b9aaa;}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="voltar">⬅ Voltar para lista</a>
+        <h2>Restrições de Sorteio</h2>
+        {% if msg %}<div class="msg">{{ msg }}</div>{% endif %}
+        <form method="POST">
+            <label for="nome">Participante:</label><br>
+            <select name="nome" id="nome" required onchange="atualizarRestritos()">
+                <option value="">Selecione um participante</option>
+                {% for nome in participantes %}
+                <option value="{{ nome }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <br><br>
+            <label for="restritos">Não pode tirar:</label><br>
+            <select name="restritos" id="restritos" multiple style="width:100%;">
+                {% for nome in participantes %}
+                <option value="{{ nome }}">{{ nome }}</option>
+                {% endfor %}
+            </select>
+            <script type="application/json" id="restricoes-json">{{ restricoes|tojson }}</script>
+            <script>
+            // Preenche restrições já salvas ao selecionar participante
+            const restricoes = JSON.parse(document.getElementById('restricoes-json').textContent);
+            function atualizarRestritos() {
+                var nome = document.getElementById('nome').value;
+                var restritos = document.getElementById('restritos');
+                for (var i = 0; i < restritos.options.length; i++) {
+                    restritos.options[i].selected = false;
+                }
+                if (restricoes[nome]) {
+                    for (var i = 0; i < restritos.options.length; i++) {
+                        if (restricoes[nome].includes(restritos.options[i].value)) {
+                            restritos.options[i].selected = true;
+                        }
+                    }
+                }
+            }
+            // Ao carregar, se já houver participante selecionado, marcar restrições
+            window.onload = function() {
+                atualizarRestritos();
+            }
+            </script>
+            <br><br>
+            <button type="submit" style="background:#25d366; color:#fff; border:none;">Salvar Restrições</button>
+        </form>
+        <div class="painel">
+            <h3>Restrições atuais:</h3>
+            <ul>
+            {% for nome, lista in restricoes.items() %}
+                <li><b>{{ nome }}</b> não pode tirar: {{ lista|join(', ') if lista else 'Ninguém' }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        <div class="footer">
+            <hr>
+            <span class="dev">Desenvolvido por Fabricio Castanheiro</span>
+        </div>
+    </div>
+</body>
+</html>
