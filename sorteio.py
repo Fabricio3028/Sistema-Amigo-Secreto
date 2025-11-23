@@ -1,3 +1,11 @@
+# Dicionário de restrições: quem não pode tirar quem
+restricoes = {
+    # Exemplo:
+    "Fabrício Castanheiro": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
+    "Daiane Meyer Castanheiro": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
+    "Patricia": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
+    "Iasmim": ["Namir", "Duduca","Cauana da Silva","Marzinho (Tuntuna)","Eloá Schutz","Lucas Schutz","Sandra Mara"],
+}
 from flask import Flask, render_template, request, redirect, url_for
 import random
 import string
@@ -39,7 +47,7 @@ participantes = [
     "Namir",
     "Duduca",
     "Patricia",
-    "Jaumir",
+    "Rodsom(Robinho)",
     "Iasmim",
     "Adão (Tio Dão)",
     "Saléte (Tia Saléte)",
@@ -52,10 +60,22 @@ participantes = [
 
 def sortear(participantes):
     sorteio = participantes.copy()
+    tentativas = 0
     while True:
         random.shuffle(sorteio)
-        if all(p != s for p, s in zip(participantes, sorteio)):
+        valido = True
+        for p, s in zip(participantes, sorteio):
+            if p == s:
+                valido = False
+                break
+            if p in restricoes and s in restricoes[p]:
+                valido = False
+                break
+        if valido:
             break
+        tentativas += 1
+        if tentativas > 10000:
+            raise Exception("Não foi possível sortear respeitando todas as restrições. Reveja as regras!")
     return dict(zip(participantes, sorteio))
 
 def gerar_codigos(nomes):
