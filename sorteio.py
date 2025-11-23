@@ -9,32 +9,32 @@ app = Flask(__name__)
 participantes = [
     "Fabrício Castanheiro",
     "Daiane Meyer Castanheiro",
-    "Valdeci deucher",
+    "Valdeci Deucher",
     "Gabriela Ribeiro",
-    "Marcelo Onorio",
+    "Marcelo Onório",
     "Helena Ribeiro",
     "Isaac Castanheiro",
     "Rosenilda Ribeiro",
-    "Fabiano de mattos",
-    "Gabriel de mattos",
-    "Ivonete Ribeiro da cunha",
+    "Fabiano de Mattos",
+    "Gabriel de Mattos",
+    "Ivonete Ribeiro da Cunha",
     "Luciana",
     "Vanderlei (delei)",
     "Micael",
     "Vanessa",
     "Eva",
     "Jucelino",
-    "daiane castanheiro",
+    "Daiane Castanheiro",
     "Lucas de Oliveira",
     "Eloah Castanheiro",
     "Miguel",
     "Taca",
     "Yuri",
     "Fabíola",
-    "cauana da Silva",
-    "Lucas schutz",
-    "Eloá schutz",
-    "Marzinho (tuntuna)",
+    "Cauana da Silva",
+    "Lucas Schutz",
+    "Eloá Schutz",
+    "Marzinho (Tuntuna)",
     "Sandra Mara",
     "Namir",
     "Duduca",
@@ -42,7 +42,12 @@ participantes = [
     "Jaumir",
     "Iasmim",
     "Adão (Tio Dão)",
-    "Salete (Tia Salete)"
+    "Saléte (Tia Saléte)",
+    "Adriano",
+    "Dayane",
+    "Viviane",
+    "Vitinho",
+    "Vitória"
 ]
 
 def sortear(participantes):
@@ -80,15 +85,52 @@ def apagar_sorteio():
     if os.path.exists("sorteio.json"):
         os.remove("sorteio.json")
 
+
+# Salva participantes em arquivo
+def salvar_participantes():
+    with open("participantes.json", "w", encoding="utf-8") as f:
+        json.dump(participantes, f, ensure_ascii=False, indent=2)
+
+# Carrega participantes do arquivo, se existir
+def carregar_participantes():
+    global participantes
+    if os.path.exists("participantes.json"):
+        with open("participantes.json", "r", encoding="utf-8") as f:
+            participantes.clear()
+            participantes.extend(json.load(f))
+
+
 @app.route('/', methods=['GET', 'POST'])
 def lista_links():
-    global resultado, codigos
+    global resultado, codigos, participantes
+    carregar_participantes()
     if request.method == "POST":
-        apagar_sorteio()
-        resultado = sortear(participantes)
-        codigos = gerar_codigos(participantes)
-        salvar_sorteio(resultado, codigos)
-        return redirect(url_for('lista_links'))
+        if 'novo_nome' in request.form and request.form['novo_nome'].strip():
+            novo_nome = request.form['novo_nome'].strip()
+            if novo_nome not in participantes:
+                participantes.append(novo_nome)
+                salvar_participantes()
+            apagar_sorteio()
+            resultado = sortear(participantes)
+            codigos = gerar_codigos(participantes)
+            salvar_sorteio(resultado, codigos)
+            return redirect(url_for('lista_links'))
+        if 'remover_nome' in request.form and request.form['remover_nome'].strip():
+            nome_remover = request.form['remover_nome'].strip()
+            if nome_remover in participantes:
+                participantes.remove(nome_remover)
+                salvar_participantes()
+            apagar_sorteio()
+            resultado = sortear(participantes)
+            codigos = gerar_codigos(participantes)
+            salvar_sorteio(resultado, codigos)
+            return redirect(url_for('lista_links'))
+        if 'refazer' in request.form:
+            apagar_sorteio()
+            resultado = sortear(participantes)
+            codigos = gerar_codigos(participantes)
+            salvar_sorteio(resultado, codigos)
+            return redirect(url_for('lista_links'))
     resultado, codigos = carregar_sorteio()
     if resultado is None or codigos is None:
         resultado = sortear(participantes)

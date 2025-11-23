@@ -26,9 +26,16 @@
 </head>
 <body>
     <div class="container">
-        <form method="POST" style="text-align:right;">
-            <button class="refazer" type="submit">🔁 Refazer Sorteio</button>
-        </form>
+
+        <div style="display:flex; flex-wrap:nowrap; gap:10px; align-items:stretch; justify-content:center; margin-bottom:18px;">
+            <form method="POST" style="display:flex; flex-wrap:nowrap; gap:10px; align-items:stretch;">
+                <input type="text" name="novo_nome" placeholder="Adicionar novo participante" style="padding:0 12px; border-radius:6px; border:1px solid #ccc; font-size:1.1em; min-width:220px; max-width:320px; height:44px;" required>
+                <button type="submit" style="background:#25d366; color:#fff; border:none; border-radius:6px; padding:0 18px; font-size:1.1em; font-weight:bold; cursor:pointer; height:44px; min-width:120px;">➕ Adicionar</button>
+            </form>
+            <form method="POST" style="margin:0;">
+                <button class="refazer" type="submit" name="refazer" value="1" style="height:44px; min-width:150px;">🔁 Refazer Sorteio</button>
+            </form>
+        </div>
 
         <h2>🎁 Amigo Secreto Natal 2025 Tia Rose 🎁</h2>
         <div class="event">Data: 24/12/2025 • Família Tia Rose</div>
@@ -42,6 +49,10 @@
                 </a>
                 <button class="copiar" onclick="copyToClipboard('{{ request.url_root }}{{ links[nome] }}', this); return false;">📥 Copiar</button>
                 <a href="https://wa.me/?text=Olá!%20Seu%20link%20do%20Amigo%20Secreto%20é:%20{{ request.url_root }}{{ links[nome] }}" class="btn-whats" target="_blank">Enviar no WhatsApp</a>
+                <form method="POST" style="margin-top:8px;">
+                    <input type="hidden" name="remover_nome" value="{{ nome }}">
+                    <button type="submit" style="background:#d83367; color:#fff; border:none; border-radius:6px; padding:6px 16px; font-size:1em; font-weight:bold; cursor:pointer; margin-top:2px;">🗑️ Remover</button>
+                </form>
                 {% else %}
                 <span style="color:#aaa;">(vaga disponível)</span>
                 {% endif %}
